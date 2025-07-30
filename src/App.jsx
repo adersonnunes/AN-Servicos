@@ -332,37 +332,37 @@ const App = () => {
             id: 1,
             title: "Residência – Ipatinga/MG",
             description: "Sistema fotovoltaico residencial para geração de 700 kWh/mês.",
-            image: "/src/assets/projetos/ipatinga.jpg",
+            image: "/projetos/ipatinga.jpg",
           },
           {
             id: 2,
             title: "Comércio – Ipatinga/MG",
             description: "Projeto solar de alta potência para empresa com uma geração de 4.000 kWh/mês.",
-            image: "/src/assets/projetos/cacique.jpg",
+            image: "/projetos/cacique.jpg",
           },
           {
             id: 3,
             title: "Residência – Dom Cavati/MG",
             description: "Sistema fotovoltaico residencial para geração de 1.000 kWh/mês.",
-            image: "/src/assets/projetos/dom-cavati.jpg",
+            image: "/projetos/dom-cavati.jpg",
           },
           {
             id: 4,
             title: "Residência – Ipatinga/MG",
             description: "Sistema fotovoltaico residencial para geração de 1.300 kWh/mês.",
-            image: "/src/assets/projetos/ipatinga2.jpg",
+            image: "/projetos/ipatinga2.jpg",
           },
           {
             id: 5,
             title: "Residência – Belo Horizonte/MG",
             description: "Sistema fotovoltaico residencial para geração de 500 kWh/mês.",
-            image: "/src/assets/projetos/BH1.jpg",
+            image: "/projetos/BH1.jpg",
           },
           {
             id: 6,
             title: "Residência – São Candido/MG",
             description: "Sistema fotovoltaico residencial para geração de 500 kWh/mês.",
-            image: "/src/assets/projetos/SC1.jpg",
+            image: "/projetos/SC1.jpg",
           },
         ].map((project, index) => (
           <motion.div
