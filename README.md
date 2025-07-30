@@ -12,11 +12,6 @@
 
 🌐 [www.anengenhariasolar.com.br](http://www.anengenhariasolar.com.br)
 
-## 🖼️ Preview do Projeto
-
-![Preview do site](https://raw.githubusercontent.com/SEU_USUARIO/SEU_REPOSITORIO/main/assets/preview.jpg)
-
-> *Imagem ilustrativa da página inicial. O site é totalmente responsivo.*
 
 ---
 
