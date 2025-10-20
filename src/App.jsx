@@ -787,6 +787,7 @@ const App = () => {
         <Route path="/depoimentos" element={<TestimonialsPage isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen} />} />
         <Route path="/contato" element={<ContactPage openWhatsAppWithConversion={openWhatsAppWithConversion} isMenuOpen={isMenuOpen} setIsMenuOpen={setIsMenuOpen} />} />
       </Routes>
+      <WhatsAppFloat openWhatsAppWithConversion={openWhatsAppWithConversion} />
     </Router>
   );
 };
