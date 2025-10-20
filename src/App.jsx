@@ -698,7 +698,6 @@ const HomePage = ({ openWhatsAppWithConversion, isMenuOpen, setIsMenuOpen }) => 
     <Testimonials />
     <Contact openWhatsAppWithConversion={openWhatsAppWithConversion} />
     <Footer />
-    <WhatsAppFloat openWhatsAppWithConversion={openWhatsAppWithConversion} />
   </div>
 );
 
