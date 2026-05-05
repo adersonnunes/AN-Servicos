@@ -584,6 +584,20 @@
     </div>
 
     <script>
+        (function() {
+    const senhaCorreta = "AN2190";
+    let acesso = sessionStorage.getItem("acessoSolar");
+
+    if (acesso !== "concedido") {
+        let tentativa = prompt("Digite a senha de acesso para o Gerador AN:");
+        if (tentativa === senhaCorreta) {
+            sessionStorage.setItem("acessoSolar", "concedido");
+        } else {
+            alert("Senha incorreta!");
+            window.location.href = "https://anengenhariasolar.com.br";
+        }
+    }
+})();
         function calculateTotalPower() {
             const qty = parseInt(document.getElementById('modulesQty').value) || 0;
             const power = parseInt(document.getElementById('modulesPower').value) || 0;
