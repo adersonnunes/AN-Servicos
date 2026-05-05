@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orçamento Solar Fotovoltaico - AN Engenharia</title>
+    <style>
+        :root {
+            --color-primary: #208091;
+            --color-primary-hover: #1a6572;
+            --color-surface: #f9f9f7;
+            --color-text: #1f2121;
+            --color-text-secondary: #626c7c;
+            --color-border: #e0e0dc;
+            --color-success: #20a454;
+            --color-warning: #a84f2f;
+            --color-error: #c0152f;
+            --spacing-8: 8px;
+            --spacing-12: 12px;
+            --spacing-16: 16px;
+            --spacing-24: 24px;
+            --radius: 8px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #f5f5f3 0%, #e8e8e5 100%);
+            color: var(--color-text);
+            min-height: 100vh;
+            padding: var(--spacing-16);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: var(--spacing-24);
+        }
+
+        h1 {
+            font-size: 28px;
+            margin-bottom: var(--spacing-8);
+            color: var(--color-primary);
+        }
+
+        .subtitle {
+            color: var(--color-text-secondary);
+            font-size: 14px;
+        }
+
+        .form-section {
+            background: white;
+            border-radius: var(--radius);
+            padding: var(--spacing-24);
+            margin-bottom: var(--spacing-24);
+            border: 1px solid var(--color-border);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: var(--spacing-16);
+            color: var(--color-primary);
+            border-bottom: 2px solid var(--color-surface);
+            padding-bottom: var(--spacing-8);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--spacing-16);
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: var(--spacing-8);
+            color: var(--color-text);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        input, select, textarea {
+            padding: var(--spacing-8) var(--spacing-16);
+            border: 1px solid var(--color-border);
+            border-radius: 4px;
+            font-size: 14px;
+            font-family: inherit;
+            background: white;
+            color: var(--color-text);
+            transition: border-color 0.2s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px rgba(32, 128, 145, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+
+        .equipment-item {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: var(--spacing-16);
+            padding: var(--spacing-16);
+            background: var(--color-surface);
+            border-radius: 4px;
+            margin-bottom: var(--spacing-16);
+            border: 1px solid var(--color-border);
+        }
+
+        .pricing-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-16);
+        }
+
+        .price-card {
+            background: var(--color-surface);
+            padding: var(--spacing-16);
+            border-radius: 4px;
+            border: 1px solid var(--color-border);
+        }
+
+        .price-label {
+            font-size: 12px;
+            color: var(--color-text-secondary);
+            text-transform: uppercase;
+            margin-bottom: var(--spacing-8);
+        }
+
+        .button-group {
+            display: flex;
+            gap: var(--spacing-16);
+            margin-top: var(--spacing-24);
+        }
+
+        button {
+            padding: var(--spacing-8) var(--spacing-24);
+            border: none;
+            border-radius: var(--radius);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            flex: 1;
+        }
+
+        .btn-primary {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--color-primary-hover);
+            box-shadow: 0 4px 12px rgba(32, 128, 145, 0.2);
+        }
+
+        .btn-secondary {
+            background: var(--color-surface);
+            color: var(--color-primary);
+            border: 1px solid var(--color-border);
+        }
+
+        .btn-secondary:hover {
+            background: white;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: var(--spacing-16);
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: var(--radius);
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            width: 100%;
+            padding: var(--spacing-24);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-24);
+            border-bottom: 1px solid var(--color-border);
+            padding-bottom: var(--spacing-16);
+        }
+
+        .budget-preview {
+            background: white;
+            border: 2px solid var(--color-border);
+            border-radius: var(--radius);
+            padding: var(--spacing-24);
+            margin-top: var(--spacing-24);
+        }
+
+        .budget-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: var(--spacing-24);
+            border-bottom: 2px solid var(--color-primary);
+            padding-bottom: var(--spacing-16);
+        }
+
+        .company-info h2 {
+            color: var(--color-primary);
+            font-size: 20px;
+            margin-bottom: var(--spacing-8);
+        }
+
+        .company-details {
+            font-size: 12px;
+            color: var(--color-text-secondary);
+            line-height: 1.6;
+        }
+
+        .budget-id {
+            text-align: right;
+        }
+
+        .budget-id strong {
+            display: block;
+            font-size: 18px;
+            color: var(--color-primary);
+            margin-bottom: var(--spacing-8);
+        }
+
+        .budget-date {
+            font-size: 12px;
+            color: var(--color-text-secondary);
+        }
+
+        .client-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--spacing-16);
+            margin-bottom: var(--spacing-24);
+            padding: var(--spacing-16);
+            background: var(--color-surface);
+            border-radius: 4px;
+        }
+
+        .client-info-label {
+            color: var(--color-text-secondary);
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 2px;
+            font-size: 11px;
+        }
+
+        .client-info-value {
+            color: var(--color-text);
+            font-size: 14px;
+            word-break: break-word;
+        }
+
+        .equipment-table {
+            width: 100%;
+            margin-bottom: var(--spacing-24);
+            font-size: 12px;
+            border-collapse: collapse;
+        }
+
+        .equipment-table th {
+            background: var(--color-primary);
+            color: white;
+            padding: var(--spacing-8) var(--spacing-16);
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .equipment-table td {
+            padding: var(--spacing-8) var(--spacing-16);
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .pricing-summary {
+            margin-top: var(--spacing-24);
+            padding-top: var(--spacing-24);
+            border-top: 2px solid var(--color-primary);
+        }
+
+        .pricing-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: var(--spacing-16);
+            font-size: 14px;
+        }
+
+        .pricing-row.cash {
+            background: rgba(32, 160, 84, 0.1);
+            padding: var(--spacing-12);
+            border-radius: 4px;
+        }
+
+        .pricing-row.installment {
+            background: rgba(32, 128, 145, 0.1);
+            padding: var(--spacing-12);
+            border-radius: 4px;
+        }
+        
+        .pricing-row.payback {
+            background: rgba(242, 169, 0, 0.15);
+            padding: var(--spacing-12);
+            border-radius: 4px;
+            border-left: 4px solid #f2a900;
+        }
+
+        .warranty-section {
+            background: var(--color-surface);
+            padding: var(--spacing-16);
+            border-radius: 4px;
+            margin-top: var(--spacing-24);
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .print-btn {
+            background: var(--color-success);
+            margin-top: var(--spacing-16);
+        }
+
+        .print-btn:hover {
+            background: #1a8c40;
+        }
+
+        /* Classes para evitar corte de conteúdo na impressão */
+        .avoid-break {
+            page-break-inside: avoid;
+            break-inside: avoid;
+        }
+
+        /* Classe para forçar quebra de página */
+        .page-break-before {
+            page-break-before: always;
+            break-before: page;
+        }
+
+        /* REGRAS DE IMPRESSÃO */
+        @media print {
+            @page {
+                size: A4;
+                margin: 12mm;
+            }
+
+            body {
+                background: white;
+                margin: 0;
+                padding: 0;
+                -webkit-print-color-adjust: exact; 
+                print-color-adjust: exact;
+            }
+
+            /* Esconde elementos da interface */
+            .form-section,
+            .button-group,
+            .modal-header,
+            .print-btn,
+            #budgetModal {
+                display: none !important;
+            }
+
+            /* Configura a visualização de impressão */
+            .budget-preview,
+            #print-preview-clone {
+                display: block !important;
+                border: none !important;
+                box-shadow: none !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>☀️ Orçamento Solar Fotovoltaico</h1>
+            <p class="subtitle">AN Engenharia - Sistemas Fotovoltaicos</p>
+        </header>
+
+        <form id="budgetForm" class="form-section">
+            <h3 class="section-title">📋 Dados do Cliente</h3>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="clientName">Nome do Cliente</label>
+                    <input type="text" id="clientName" required>
+                </div>
+                <div class="form-group">
+                    <label for="clientCPF">CPF/CNPJ</label>
+                    <input type="text" id="clientCPF" required>
+                </div>
+                <div class="form-group">
+                    <label for="clientCity">Cidade/Estado</label>
+                    <input type="text" id="clientCity" required>
+                </div>
+            </div>
+            <div class="form-group" style="margin-top:16px;">
+                <label for="clientAddress">Endereço Completo</label>
+                <textarea id="clientAddress" required></textarea>
+            </div>
+
+            <h3 class="section-title" style="margin-top:24px;">⚡ Equipamentos do Sistema</h3>
+            <div style="margin-bottom:24px;">
+                <h4 style="font-size:13px;margin-bottom:16px;">Módulos Fotovoltaicos</h4>
+                <div class="equipment-item">
+                    <div class="form-group">
+                        <label>Modelo</label>
+                        <input type="text" id="modulesModel" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Quantidade</label>
+                        <input type="number" id="modulesQty" min="1" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Potência Unitária (W)</label>
+                        <input type="number" id="modulesPower" min="1" required>
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-bottom:24px;">
+                <h4 style="font-size:13px;margin-bottom:16px;">Inversor</h4>
+                <div class="equipment-item">
+                    <div class="form-group">
+                        <label>Tipo de Inversor</label>
+                        <select id="inverterType" required>
+                            <option value="">Selecione...</option>
+                            <option>Micro Inversor</option>
+                            <option>Inversor String</option>
+                            <option>Inversor Híbrido</option>
+                            <option>Inversor Off-Grid</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Modelo</label>
+                        <input type="text" id="inverterModel" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Quantidade</label>
+                        <input type="number" id="inverterQty" min="1" required>
+                    </div>
+                </div>
+                <div class="equipment-item" style="margin-top:16px;">
+                    <div class="form-group">
+                        <label>Potência (kW)</label>
+                        <input type="number" id="inverterPower" min="0.1" step="0.1" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Observações (Baterias, etc)</label>
+                        <input type="text" id="inverterNote">
+                    </div>
+                    <div class="form-group">
+                        <label style="visibility:hidden;">-</label>
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-bottom:24px;">
+                <h4 style="font-size:13px;margin-bottom:16px;">Estrutura de Telhado</h4>
+                <div class="equipment-item">
+                    <div class="form-group">
+                        <label>Tipo de Estrutura</label>
+                        <select id="structureType" required>
+                            <option value="">Selecione...</option>
+                            <option>Fibrocimento</option>
+                            <option>Telhado Metálico</option>
+                            <option>Concreto</option>
+                            <option>Cerâmica</option>
+                            <option>Telha Francesa</option>
+                            <option>Laje</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Área Útil (m²)</label>
+                        <input type="number" id="usefulArea" min="1" step="0.5" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Inclinação (graus)</label>
+                        <input type="number" id="inclination" value="20" min="0" max="90">
+                    </div>
+                </div>
+            </div>
+
+            <h3 class="section-title">💰 Preço, Parâmetros e Análise Financeira</h3>
+            <div class="pricing-section">
+                <div class="price-card">
+                    <div class="price-label">💵 Preço à Vista (R$)</div>
+                    <input type="number" id="priceCash" min="0" step="0.01" required>
+                </div>
+                <div class="price-card">
+                    <div class="price-label">📅 Preço Parcelado Total (R$)</div>
+                    <input type="number" id="priceInstallmentTotal" min="0" step="0.01" required>
+                </div>
+            </div>
+
+            <div class="form-grid" style="margin-top:16px;">
+                <div class="form-group">
+                    <label>Fator de Geração da Região (kWh/kWp)</label>
+                    <input type="number" id="fatorGeracao" step="0.1" value="115" required>
+                </div>
+                <div class="form-group">
+                    <label>Tarifa de Energia (R$/kWh)</label>
+                    <input type="number" id="tarifaEnergia" step="0.01" value="0.95" required>
+                </div>
+                <div class="form-group">
+                    <label>Taxa Mínima da Concessionária (R$)</label>
+                    <input type="number" id="taxaMinima" step="0.01" value="130.00" required>
+                </div>
+            </div>
+
+            <div class="form-grid" style="margin-top:16px;">
+                <div class="form-group">
+                    <label for="installmentsQty">Número de Parcelas</label>
+                    <select id="installmentsQty" required>
+                        <option>1</option><option>2</option><option>3</option><option>4</option>
+                        <option>5</option><option>6</option><option>7</option><option>8</option>
+                        <option>9</option><option>10</option><option>11</option>
+                        <option selected>12</option>
+                        <option>24</option><option>36</option><option>48</option><option>60</option>
+                        <option>72</option><option>84</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="validityDays">Validade do Orçamento (dias)</label>
+                    <input type="number" id="validityDays" value="15" min="1" required>
+                </div>
+                <div class="form-group">
+                    </div>
+            </div>
+
+            <div class="button-group">
+                <button type="button" class="btn-secondary" onclick="resetForm()">Limpar</button>
+                <button type="button" class="btn-primary" onclick="generateBudget()">Gerar Orçamento</button>
+            </div>
+        </form>
+
+        <div id="budgetModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Visualizar Orçamento</h2>
+                    <button type="button" onclick="closeBudget()">✕</button>
+                </div>
+                <div id="budgetContent"></div>
+                <button type="button" class="btn-primary print-btn" onclick="printBudget()">🖨️ Imprimir/Salvar como PDF</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function calculateTotalPower() {
+            const qty = parseInt(document.getElementById('modulesQty').value) || 0;
+            const power = parseInt(document.getElementById('modulesPower').value) || 0;
+            return (qty * power / 1000).toFixed(2);
+        }
+
+        function estimateGenerationKwh(totalPowerKwp, specificYield) {
+            const monthly = totalPowerKwp * specificYield;
+            return monthly.toFixed(0);
+        }
+
+        function formatCurrency(value) {
+            return new Intl.NumberFormat('pt-BR', {
+                style: 'currency',
+                currency: 'BRL'
+            }).format(value);
+        }
+
+        function formatDate(date) {
+            return new Intl.DateTimeFormat('pt-BR').format(date);
+        }
+
+        function generateBudget() {
+            const clientName = document.getElementById('clientName').value;
+            const clientCPF = document.getElementById('clientCPF').value;
+            const clientCity = document.getElementById('clientCity').value;
+            const clientAddress = document.getElementById('clientAddress').value;
+
+            const modulesModel = document.getElementById('modulesModel').value;
+            const modulesQty = parseInt(document.getElementById('modulesQty').value);
+            const modulesPower = parseInt(document.getElementById('modulesPower').value);
+            const totalPower = calculateTotalPower();
+            
+            // Fator de Geração customizado pelo usuário
+            const fatorGeracao = parseFloat(document.getElementById('fatorGeracao').value);
+            const generationKwh = estimateGenerationKwh(parseFloat(totalPower), fatorGeracao);
+
+            const inverterType = document.getElementById('inverterType').value;
+            const inverterModel = document.getElementById('inverterModel').value;
+            const inverterQty = parseInt(document.getElementById('inverterQty').value);
+            const inverterPower = parseFloat(document.getElementById('inverterPower').value);
+            const inverterNote = document.getElementById('inverterNote').value;
+
+            const structureType = document.getElementById('structureType').value;
+            const usefulArea = parseFloat(document.getElementById('usefulArea').value);
+            const inclination = parseInt(document.getElementById('inclination').value);
+
+            const priceCash = parseFloat(document.getElementById('priceCash').value);
+            const priceInstallmentTotal = parseFloat(document.getElementById('priceInstallmentTotal').value);
+            const installmentsQty = parseInt(document.getElementById('installmentsQty').value);
+            const priceInstallment = (priceInstallmentTotal / installmentsQty).toFixed(2);
+            
+            const tarifaEnergia = parseFloat(document.getElementById('tarifaEnergia').value);
+            const taxaMinima = parseFloat(document.getElementById('taxaMinima').value);
+            
+            const validityDays = parseInt(document.getElementById('validityDays').value);
+
+            const today = new Date();
+            const validity = new Date(today.getTime() + validityDays * 24 * 60 * 60 * 1000);
+
+            // Cálculo do Payback
+            const economiaBrutaMensal = parseFloat(generationKwh) * tarifaEnergia;
+            const economiaLiquidaMensal = economiaBrutaMensal - taxaMinima;
+            const economiaLiquidaAnual = economiaLiquidaMensal * 12;
+            const paybackAnos = (priceCash / economiaLiquidaAnual).toFixed(1);
+
+            let garantiaInversor = "10 anos de equipamento";
+            if (inverterType === "Micro Inversor") {
+                garantiaInversor = "15 anos de equipamento";
+            }
+
+            const html = `
+                <div class="budget-preview">
+                    
+                    <div class="avoid-break">
+                        <div class="budget-header">
+                            <div class="company-info">
+                                <h2 style="font-size:24px;">AN ENGENHARIA</h2>
+                                <div class="company-details">
+                                    <strong>AN SERVIÇOS ELÉTRICOS LTDA</strong><br>
+                                    CNPJ: 61.757.408/0001-05<br>
+                                    📞 (31) 99570-2102<br>
+                                    🌐 www.anengenhariasolar.com.br<br>
+                                    📧 anservicoseng@gmail.com
+                                </div>
+                            </div>
+                            <div class="budget-id">
+                                <strong>ORÇAMENTO</strong>
+                                <span style="color:#208091;font-size:16px;font-weight:bold;">#${today.getTime().toString().slice(-6)}</span><br>
+                                <div class="budget-date" style="margin-top:8px;">
+                                    Data: ${formatDate(today)}<br>
+                                    Válido até: ${formatDate(validity)}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="client-info">
+                            <div>
+                                <div class="client-info-label">Cliente</div>
+                                <div class="client-info-value" style="font-weight:bold;">${clientName}</div>
+                            </div>
+                            <div>
+                                <div class="client-info-label">CPF/CNPJ</div>
+                                <div class="client-info-value">${clientCPF}</div>
+                            </div>
+                            <div>
+                                <div class="client-info-label">Localização</div>
+                                <div class="client-info-value">${clientCity}</div>
+                            </div>
+                            <div>
+                                <div class="client-info-label">Endereço</div>
+                                <div class="client-info-value">${clientAddress}</div>
+                            </div>
+                        </div>
+
+                        <div style="background:#f9f9f7;padding:20px;border-radius:4px;margin-bottom:12px;border: 1px solid var(--color-border);">
+                            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:20px;font-size:13px;">
+                                <div>
+                                    <strong style="color:#208091;">Potência Instalada</strong><br>
+                                    <span style="font-size:18px;font-weight:bold;color:#208091;">${totalPower} kWp</span>
+                                </div>
+                                <div>
+                                    <strong style="color:#208091;">Área de Telhado</strong><br>
+                                    <span style="font-size:18px;font-weight:bold;">${usefulArea} m²</span>
+                                </div>
+                                <div>
+                                    <strong style="color:#208091;">Inclinação</strong><br>
+                                    <span style="font-size:18px;font-weight:bold;">${inclination}°</span>
+                                </div>
+                                <div>
+                                    <strong style="color:#208091;">Geração Estimada</strong><br>
+                                    <span style="font-size:18px;font-weight:bold;">
+                                        ${generationKwh} kWh/mês
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="font-size:10px;color:#626c7c;margin-bottom:30px;line-height:1.4;">
+                            * Valores de geração estimada calculados com base em dados médios de irradiação e histórico de sistemas similares, podendo variar cerca de ±10% em função de clima, sombreamento, sujidade e condições operacionais.
+                        </div>
+                    </div>
+
+                    <div class="page-break-before"></div>
+
+                    <div class="avoid-break">
+                        <h3 style="font-size:16px;margin-bottom:16px;color:#208091;border-bottom:2px solid var(--color-border);padding-bottom:8px;">Tecnologia Selecionada</h3>
+
+                        <table class="equipment-table">
+                            <thead>
+                                <tr>
+                                    <th>Item</th>
+                                    <th>Modelo</th>
+                                    <th>Especificação / Quantidade</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Módulos Fotovoltaicos</strong></td>
+                                    <td>${modulesModel}</td>
+                                    <td>${modulesQty} unidades × ${modulesPower}W</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>${inverterType}</strong></td>
+                                    <td>${inverterModel}</td>
+                                    <td>${inverterQty} unidade(s) × ${inverterPower} kW ${inverterNote ? '- ' + inverterNote : ''}</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Estrutura de Fixação</strong></td>
+                                    <td>${structureType}</td>
+                                    <td>Kit Completo de Instalação</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="avoid-break">
+                        <div class="warranty-section">
+                            <div class="warranty-title">🛡️ Garantias Oficiais e Serviços Inclusos</div>
+                            <ul style="margin-left: 20px; line-height: 1.8;">
+                                <li><strong>Módulos Fotovoltaicos:</strong> 12 anos de garantia de fábrica e 30 anos de performance linear.</li>
+                                <li><strong>Inversores:</strong> ${garantiaInversor}.</li>
+                                <li><strong>Engenharia e Instalação:</strong> Cobertura e seguro técnico por 12 meses após a conclusão da obra.</li>
+                                <li><strong>Serviços Inclusos:</strong> Homologação completa na CEMIG, projeto assinado por engenheiro (ART), materiais elétricos de proteção e suporte pós-venda.</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="avoid-break">
+                        <h3 style="font-size:16px;margin-top:30px;margin-bottom:16px;color:#208091;border-bottom:2px solid var(--color-border);padding-bottom:8px;">Análise Financeira e Retorno do Investimento</h3>
+                        
+                        <div class="pricing-summary" style="margin-top: 0; padding-top: 0; border-top: none;">
+                            <div class="pricing-row cash" style="margin-bottom: 12px;">
+                                <span>Opção 1: <strong>Investimento à Vista</strong></span>
+                                <strong style="font-size:18px;">${formatCurrency(priceCash)}</strong>
+                            </div>
+                            <div class="pricing-row installment" style="margin-bottom: 12px;">
+                                <span>Opção 2: <strong>Financiamento Bancário</strong> (${installmentsQty}x)</span>
+                                <div style="text-align: right;">
+                                    <strong style="font-size:18px;">${installmentsQty}x de ${formatCurrency(priceInstallment)}</strong><br>
+                                    <span style="font-size:11px; font-weight:normal;">Total a prazo: ${formatCurrency(priceInstallmentTotal)}</span>
+                                </div>
+                            </div>
+                            
+                            <div class="pricing-row payback">
+                                <div>
+                                    <span style="font-weight:bold; color:#1f2121; display:block; margin-bottom:4px;">⏱️ Tempo de Payback Estimado</span>
+                                    <span style="font-size:11px; color:#555;">(Considerando Tarifa de R$ ${tarifaEnergia.toFixed(2).replace('.',',')}/kWh e Taxa Mínima de R$ ${taxaMinima.toFixed(2).replace('.',',')})</span>
+                                </div>
+                                <strong style="font-size:20px; color:#d49000;">${paybackAnos} anos</strong>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            document.getElementById('budgetContent').innerHTML = html;
+            document.getElementById('budgetModal').classList.add('active');
+
+            const preview = document.querySelector('#budgetContent .budget-preview');
+            const clone = preview.cloneNode(true);
+            clone.style.display = 'none';
+            clone.id = 'print-preview-clone';
+            const old = document.getElementById('print-preview-clone');
+            if (old) old.remove();
+            document.body.appendChild(clone);
+        }
+
+        function closeBudget() {
+            document.getElementById('budgetModal').classList.remove('active');
+        }
+
+        function printBudget() {
+            window.print();
+        }
+
+        function resetForm() {
+            document.getElementById('budgetForm').reset();
+            document.getElementById('inclination').value = '20';
+            document.getElementById('validityDays').value = '15';
+            document.getElementById('fatorGeracao').value = '115';
+            document.getElementById('tarifaEnergia').value = '0.95';
+            document.getElementById('taxaMinima').value = '130.00';
+        }
+    </script>
+</body>
+</html>
